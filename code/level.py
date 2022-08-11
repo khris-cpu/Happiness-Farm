@@ -8,7 +8,6 @@ class Level:
         self.display_surface = pygame.display.get_surface() ## == self.screen
         # sprite group
         self.all_sprites = pygame.sprite.Group() ## Draw and update Sprites --> Tree,Plants
-
         self.setup()
 
     def setup(self):
