@@ -8,7 +8,9 @@ class Player(pygame.sprite.Sprite): ## pygame.spriteSprite --> Simple base class
 
         self.import_assets()
         self.status = 'down' ## Image --> Player Activity
-        self.frame_index = 0
+
+        ## Frame Index --> a Number of Picture => 0,1,2,3...
+        self.frame_index = 0  ## In Image Folder Start at 0
 
         ## general setup
         self.image = self.animations[self.status][self.frame_index]  ## Call The Animations
@@ -32,6 +34,13 @@ class Player(pygame.sprite.Sprite): ## pygame.spriteSprite --> Simple base class
             full_path = './Graphics Folder/Graphic Folder 1/character/' + animation ## Import All Animations of Character in Graphics Folder
             self.animations[animation] = import_folder(full_path) ## Call import_folder function
 
+    def animate(self,dt):
+        self.frame_index += 4 * dt
+        if self.frame_index >= len(self.animations[self.status]):  ## In Our Folder in limits Only 4 Pictures
+            self.frame_index = 0
+
+        self.image = self.animations[self.status][int(self.frame_index)]
+
     def input(self):
 
         ## input key
@@ -39,17 +48,29 @@ class Player(pygame.sprite.Sprite): ## pygame.spriteSprite --> Simple base class
 
         if keys[pygame.K_w]: ## up
             self.direction.y = -1
+            self.status = 'up'
         elif keys[pygame.K_s]: ## down
             self.direction.y = 1
+            self.status = 'down'
         else:
             self.direction.y = 0
 
         if keys[pygame.K_d]: ## right
             self.direction.x = 1
+            self.status = 'right'
         elif keys[pygame.K_a]: ## left
             self.direction.x = -1
+            self.status = 'left'
         else :
             self.direction.x = 0
+
+    def get_status(self):
+        
+        ## movement
+        if self.direction.magnitude() == 0:
+            self.status = self.status.split('_')[0] + '_idle'
+        
+        ## tool use
 
     def move(self,dt):
 
@@ -64,7 +85,10 @@ class Player(pygame.sprite.Sprite): ## pygame.spriteSprite --> Simple base class
         self.pos.y += self.direction.y * self.speed * dt
         self.rect.centery = self.pos.y
     
-
     def update(self,dt):
+
+        ## Call Function
         self.input()
+        self.get_status()
         self.move(dt)
+        self.animate(dt) 
