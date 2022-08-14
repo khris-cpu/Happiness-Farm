@@ -4,7 +4,7 @@ class Timer:
     def __init__(self,duration,func = None):
         self.duration = duration ## ระยะเวลา --> To Check Where is time already now
         self.func = func
-        self.start_time = 0
+        self.start_time = 0 ## Start Time
         self.active = False
 
     def activate(self):
