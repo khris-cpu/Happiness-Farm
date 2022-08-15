@@ -15,7 +15,8 @@ class Player(pygame.sprite.Sprite): ## pygame.spriteSprite --> Simple base class
 
         ## general setup
         self.image = self.animations[self.status][self.frame_index]  ## Call The Animations
-        self.rect = self.image.get_rect(center = pos) ## Position
+        self.rect = self.image.get_rect(center = pos) ## X,Y Position
+        self.z = LAYERS['main'] ## Player Layers --> Z position
 
         ## movement attributes
         self.direction = pygame.math.Vector2() ## 2-Dimensional Vector
@@ -24,14 +25,27 @@ class Player(pygame.sprite.Sprite): ## pygame.spriteSprite --> Simple base class
 
         ## timers
         self.timers = {
-            'tool use' : Timer(350,self.use_tool) ## Set the time of Tools animation 
+            'tool use' : Timer(350,self.use_tool), ## Set the time of Tools animation 
+            'tool switch' : Timer(200),
+            'seed use' : Timer(350,self.use_seed),
+            'seed switch' : Timer(200)
         }
 
         ## tools
-        self.selected_tool = 'hoe'
+        self.tools = ['hoe','axe','water']
+        self.tool_index = 0
+        self.selected_tool = self.tools[self.tool_index]
+
+        ## seeds
+        self.seeds = ['corn','tomato']
+        self.seed_index = 0
+        self.selected_seed = self.seeds[self.seed_index]
 
     def use_tool(self):
-        print(self.selected_tool)
+        return self.selected_tool
+
+    def use_seed(self):
+        return self.selected_seed 
 
     def import_assets(self):
 
@@ -46,6 +60,7 @@ class Player(pygame.sprite.Sprite): ## pygame.spriteSprite --> Simple base class
             full_path = './Graphics Folder/Graphic Folder 1/character/' + animation ## Import All Animations of Character in Graphics Folder
             self.animations[animation] = import_folder(full_path) ## Call import_folder function
 
+    ## Animations
     def animate(self,dt):
         self.frame_index += 4 * dt
         if self.frame_index >= len(self.animations[self.status]):  ## In Our Folder in limits Only 4 Pictures
@@ -57,7 +72,7 @@ class Player(pygame.sprite.Sprite): ## pygame.spriteSprite --> Simple base class
 
         keys = pygame.key.get_pressed()
 
-        if not self.timers['tool use'].active:
+        if not self.timers['tool use'].active: ## If self.timers != False
 
             ## Direction
             if keys[pygame.K_w]: ## up
@@ -84,6 +99,25 @@ class Player(pygame.sprite.Sprite): ## pygame.spriteSprite --> Simple base class
                 self.direction = pygame.math.Vector2()
                 self.frame_index = 0
 
+            ## Change Tool
+            if keys[pygame.K_q] and not self.timers['tool switch'].active:
+                self.timers['tool switch'].activate()
+                self.tool_index += 1
+                if self.tool_index >= len(self.tools):
+                    self.tool_index = 0
+                print(self.selected_tool)
+                self.selected_tool = self.tools[self.tool_index]
+            
+            ## seed use 
+            if keys[pygame.K_e] and not self.timers['seed switch'].active:
+                self.timers['seed switch'].activate()
+                self.seed_index += 1
+                if self.seed_index >= len(self.seeds):
+                    self.seed_index = 0
+                print(self.selected_seed)
+                self.selected_seed = self.seeds[self.seed_index]
+
+
     def get_status(self):
         
         ## movement
@@ -96,7 +130,7 @@ class Player(pygame.sprite.Sprite): ## pygame.spriteSprite --> Simple base class
 
     def update_timers(self):
         for timer in self.timers.values():
-                timer.update()
+            timer.update()
 
     def move(self,dt):
 
