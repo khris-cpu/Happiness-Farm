@@ -1,5 +1,6 @@
 import pygame
 
+## To get Slow Down The Animation
 class Timer:
     def __init__(self,duration,func = None):
         self.duration = duration ## ระยะเวลา --> To Check Where is time already now
