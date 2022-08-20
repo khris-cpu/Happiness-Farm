@@ -9,12 +9,15 @@ class Overlay:
         self.player = player
 
         ## imports
-        overlay_path = './Graphics Folder/Graphic Folder 2/overlay/'
-        self.tools_surf = {tool:pygame.image.load(f'{overlay_path}{tool}.png').convert_alpha()
+        overlay_path = './graphics/overlay/'
+        self.tools_surf = {
+            tool:pygame.image.load(f'{overlay_path}{tool}.png').convert_alpha()
                            for tool in player.tools}
-        self.seeds_surf = {seed:pygame.image.load(f'{overlay_path}{seed}.png').convert_alpha()
+        self.seeds_surf = {
+            seed:pygame.image.load(f'{overlay_path}{seed}.png').convert_alpha()
                            for seed in player.seeds}  
 
+    ## display overlay
     def display(self):
 
         ## tool
@@ -26,5 +29,3 @@ class Overlay:
         seed_surf = self.seeds_surf[self.player.selected_seed]
         seed_rect = seed_surf.get_rect(midbottom = OVERLAY_POSITIONS['seed'])
         self.display_surface.blit(seed_surf,seed_rect)
-
-# './Graphics Folder/Graphic Folder 2/overlay/'

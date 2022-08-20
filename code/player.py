@@ -57,7 +57,7 @@ class Player(pygame.sprite.Sprite): ## pygame.spriteSprite --> Simple base class
                             'right_water' : [] , 'left_water' : [] , 'up_water' : [] , 'down_water' : []} ## Water Animation Movement
 
         for animation in self.animations.keys() :
-            full_path = './Graphics Folder/Graphic Folder 1/character/' + animation ## Import All Animations of Character in Graphics Folder
+            full_path = './graphics/character/' + animation ## Import All Animations of Character in Graphics Folder
             self.animations[animation] = import_folder(full_path) ## Call import_folder function
 
     ## Animations
