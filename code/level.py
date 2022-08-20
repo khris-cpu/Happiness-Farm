@@ -2,7 +2,7 @@ import pygame
 from settings import *
 from player import Player
 from overlay import Overlay
-from sprites import Generic
+from sprites import Generic , Water , WildFlower , Tree
 from pytmx.util_pygame import load_pygame
 from support import *
 
@@ -20,6 +20,8 @@ class Level:
         ## Load map.tmx --> Tiled
         tmx_data = load_pygame('./data/map.tmx') 
 
+        ## Load Elements
+
         ## house
         for layer in ['HouseFloor','HouseFurnitureBottom']:
             for x, y, surf in tmx_data.get_layer_by_name(layer).tiles():
@@ -32,6 +34,19 @@ class Level:
         ## Fence
         for x, y, surf in tmx_data.get_layer_by_name('Fence').tiles():
                 Generic((x * TILE_SIZE, y * TILE_SIZE),surf,self.all_sprites)
+
+        ## Water
+        water_frames = import_folder('./graphics/water')
+        for x, y, surf in tmx_data.get_layer_by_name('Water').tiles():
+                Water((x * TILE_SIZE, y * TILE_SIZE),water_frames,self.all_sprites)
+
+        ## Wildflowers
+        for obj in tmx_data.get_layer_by_name('Decoration'):
+            WildFlower((obj.x,obj.y), obj.image , self.all_sprites)
+
+        ## Trees
+        for obj in tmx_data.get_layer_by_name('Trees'):
+            Tree((obj.x,obj.y),obj.image,self.all_sprites,obj.name)
 
         Generic(
             pos = (0,0),
@@ -63,7 +78,8 @@ class CameraGroup(pygame.sprite.Group): ## --> All Background Item Group
         self.offset.y = player.rect.centery - SCREEN_HEIGHT / 2
 
         for layer in LAYERS.values():
-            for sprite in self.sprites():
+            ##For Player Behind the element --> sorted(self.sprites() , key = lambda sprite : sprite.rect.centery)
+            for sprite in sorted(self.sprites() , key = lambda sprite : sprite.rect.centery):
                 if layer == sprite.z:
                     offset_rect = sprite.rect.copy()  ## copy() --> return a same list
                     offset_rect.center -= self.offset ## Position of Player 
