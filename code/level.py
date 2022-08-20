@@ -27,11 +27,11 @@ class Level:
         
         for layer in ['HouseWalls','HouseFurnitureTop']:
             for x, y, surf in tmx_data.get_layer_by_name(layer).tiles():
-                Generic((x * TILE_SIZE, y * TILE_SIZE),surf,self.all_sprites,LAYERS['main'])
+                Generic((x * TILE_SIZE, y * TILE_SIZE),surf,self.all_sprites) ## Don;t have layers --> LAYERS['main'] == Default layer in Generic Class
         
         ## Fence
         for x, y, surf in tmx_data.get_layer_by_name('Fence').tiles():
-                Generic((x * TILE_SIZE, y * TILE_SIZE),surf,self.all_sprites,LAYERS['main'])
+                Generic((x * TILE_SIZE, y * TILE_SIZE),surf,self.all_sprites)
 
         Generic(
             pos = (0,0),
