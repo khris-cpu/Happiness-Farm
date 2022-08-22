@@ -11,11 +11,10 @@ class Game:
         self.clock = pygame.time.Clock()
         self.level = Level()
         pygame.display.set_caption('Happiness Farm')
-        ## Load Music 
         mixer.init()
         BG_MUSIC = mixer.music.load('./audio/001 - Stardew Valley Overture.mp3')
         mixer.music.set_volume(0.2)
-        mixer.music.play()
+        mixer.music.play(-1)
 
     def run(self):
         while True:
