@@ -4,7 +4,7 @@ from support import *
 from timer import Timer
 
 class Player(pygame.sprite.Sprite): ## pygame.spriteSprite --> Simple base class for visible game objects.
-    def __init__ (self, pos , group, collision_sprites,tree_sprites):
+    def __init__ (self, pos , group, collision_sprites,tree_sprites,interaction):
         super().__init__(group)
 
         self.import_assets()
@@ -45,8 +45,18 @@ class Player(pygame.sprite.Sprite): ## pygame.spriteSprite --> Simple base class
         self.seed_index = 0
         self.selected_seed = self.seeds[self.seed_index]
 
+        ## inventory
+        self.item_inventory = {
+            'wood' : 0,
+            'apple' : 0,
+            'corn' : 0,
+            'tomato' : 0
+        }
+
         ## interaction
         self.tree_sprites = tree_sprites
+        self.interaction = interaction
+        self.sleep = False
 
     def use_tool(self):
         if self.selected_tool == 'hoe':
@@ -89,7 +99,7 @@ class Player(pygame.sprite.Sprite): ## pygame.spriteSprite --> Simple base class
 
         keys = pygame.key.get_pressed()
 
-        if not self.timers['tool use'].active: ## If self.timers != False
+        if not self.timers['tool use'].active and not self.sleep: ## If self.timers != False and Sleep
 
             ## Direction
             if keys[pygame.K_w]: ## up
@@ -132,6 +142,14 @@ class Player(pygame.sprite.Sprite): ## pygame.spriteSprite --> Simple base class
                     self.seed_index = 0
                 self.selected_seed = self.seeds[self.seed_index]
 
+            if keys[pygame.K_f]:
+                collided_interaction_sprite = pygame.sprite.spritecollide(self,self.interaction,False)
+                if collided_interaction_sprite:
+                    if collided_interaction_sprite[0].name == 'Trader':
+                        pass
+                    else:
+                        self.status = 'left_idle'
+                        self.sleep = True
 
     def get_status(self):
         

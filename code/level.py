@@ -1,13 +1,11 @@
-from ipaddress import collapse_addresses
-from re import T
-import tarfile
 import pygame
 from settings import *
 from player import Player
 from overlay import Overlay
-from sprites import Generic , Water , WildFlower , Tree
+from sprites import Generic , Water , WildFlower , Tree , Interaction
 from pytmx.util_pygame import load_pygame
 from support import *
+from transition import Transition
 
 class Level:
     def __init__(self):
@@ -18,9 +16,11 @@ class Level:
         self.all_sprites = CameraGroup()
         self.collision_sprites = pygame.sprite.Group()
         self.tree_sprites = pygame.sprite.Group()
+        self.interaction_sprites = pygame.sprite.Group()
 
         self.setup()
         self.overlay = Overlay(self.player)
+        self.transition = Transition(self.reset,self.player)
 
     def setup(self):
         
@@ -36,7 +36,7 @@ class Level:
         
         for layer in ['HouseWalls','HouseFurnitureTop']:
             for x, y, surf in tmx_data.get_layer_by_name(layer).tiles():
-                Generic((x * TILE_SIZE, y * TILE_SIZE),surf,self.all_sprites) ## Don;t have layers --> LAYERS['main'] == Default layer in Generic Class
+                Generic((x * TILE_SIZE, y * TILE_SIZE),surf,self.all_sprites) ## Don't have layers --> LAYERS['main'] == Default layer in Generic Class
         
         ## Fence
         for x, y, surf in tmx_data.get_layer_by_name('Fence').tiles():
@@ -53,7 +53,12 @@ class Level:
 
         ## Trees
         for obj in tmx_data.get_layer_by_name('Trees'):
-            Tree((obj.x,obj.y),obj.image,[self.all_sprites,self.collision_sprites,self.tree_sprites],obj.name)
+            Tree(
+                pos = (obj.x,obj.y),
+                surf = obj.image,
+                groups=[self.all_sprites,self.collision_sprites,self.tree_sprites],
+                name = obj.name,
+                player_add = self.player_add)
 
         ## Collsion Tiled
         for x,y,surf in tmx_data.get_layer_by_name('Collision').tiles():
@@ -73,13 +78,34 @@ class Level:
                     pos = (obj.x,obj.y),
                     group = self.all_sprites,
                     collision_sprites = self.collision_sprites,
-                    tree_sprites = self.tree_sprites)
+                    tree_sprites = self.tree_sprites,
+                    interaction = self.interaction_sprites)
+            if obj.name == 'Bed':
+                Interaction(
+                    pos = (obj.x,obj.y),
+                    size= (obj.width,obj.height),
+                    groups = self.interaction_sprites ,
+                    name = obj.name)
+
+    def player_add(self,item):
+        self.player.item_inventory[item] += 1
+
+    def reset(self):
+
+        #apples on the tree
+        for tree in self.tree_sprites.sprites():
+            for apple in tree.apple_sprites.sprites():
+                apple.kill()
+            tree.create_fruit()
 
     def run(self,dt):
         self.display_surface.fill('black')
         self.all_sprites.customize_draw(self.player)
         self.all_sprites.update(dt)
         self.overlay.display()
+
+        if self.player.sleep:
+            self.transition.play()
 
 ## Camera Class Group
 class CameraGroup(pygame.sprite.Group): ## --> All Background Item Group
@@ -101,12 +127,3 @@ class CameraGroup(pygame.sprite.Group): ## --> All Background Item Group
                     offset_rect = sprite.rect.copy()  ## copy() --> return a same list
                     offset_rect.center -= self.offset ## Position of Player 
                     self.display_surface.blit(sprite.image,offset_rect)
-                
-                ## Analytics Model
-                # if sprite == player:
-                #     pygame.draw.rect(self.display_surface,'red',offset_rect,5)
-                #     hitbox_rect = player.hitbox.copy()
-                #     hitbox_rect.center = offset_rect.center
-                #     pygame.draw.rect(self.display_surface,'green',hitbox_rect,5)
-                #     target_pos = offset_rect.center + PLAYER_TOOL_OFFSET[player.status.split('_')[0]]
-                #     pygame.draw.circle(self.display_surface,'blue',target_pos,5)
