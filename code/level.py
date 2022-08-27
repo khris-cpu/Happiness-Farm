@@ -7,6 +7,8 @@ from pytmx.util_pygame import load_pygame
 from support import *
 from transition import Transition
 from soil import SoilLayer
+from sky import Rain
+from random import randint
 
 class Level:
     def __init__(self):
@@ -25,13 +27,18 @@ class Level:
         self.overlay = Overlay(self.player)
         self.transition = Transition(self.reset,self.player)
 
+        ## Sky
+        self.rain = Rain(self.all_sprites)
+        self.raining = randint(0,10) > 7
+        self.soil_layer.raining = self.raining
+
     def setup(self):
         
         ## Load map.tmx --> Tiled
         tmx_data = load_pygame('./data/map.tmx') 
-
-        ## Load Elements
         
+        ## Load Elements
+
         ## house
         for layer in ['HouseFloor','HouseFurnitureBottom']:
             for x, y, surf in tmx_data.get_layer_by_name(layer).tiles():
@@ -103,6 +110,9 @@ class Level:
             tree.create_fruit()
         ## Soils
         self.soil_layer.remove_water()
+        self.raining = randint(0,10) > 7
+        if self.raining:
+            self.soil_layer.water_all()
 
     def run(self,dt):
         self.display_surface.fill('black')
@@ -110,6 +120,11 @@ class Level:
         self.all_sprites.update(dt)
         self.overlay.display()
 
+        ## Rain
+        if self.raining:
+            self.rain.update()
+
+        ## Transition Overlay
         if self.player.sleep:
             self.transition.play()
 

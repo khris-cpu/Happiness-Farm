@@ -1,4 +1,3 @@
-from re import X
 from secrets import choice
 import pygame
 from settings import *
@@ -63,6 +62,8 @@ class SoilLayer:
                 if 'F' in self.grid[y][x]:
                     self.grid[y][x].append('X')
                     self.create_soil_tiles()
+                    if self.raining:
+                        self.water_all()
     
     ## Generate Soil Tiles
     def create_soil_tiles(self):
@@ -127,6 +128,19 @@ class SoilLayer:
                         groups = [self.all_sprites,self.soil_sprites]
                         )
     
+    def water_all(self):
+        for index_row,row in enumerate(self.grid):
+            for index_col,cell in enumerate(row):
+                if 'X' in cell and 'W' not in cell:
+                    cell.append('W')
+                    x = index_col * TILE_SIZE
+                    y = index_row * TILE_SIZE
+                    WaterTile(
+                        pos = (x,y),
+                        surf = choice(self.water_surfs),
+                        groups = [self.all_sprites,self.water_sprites]
+                    )
+
     ## Water Method
     def water(self,target_pos):
         for soil_sprite in self.soil_sprites.sprites():
@@ -139,7 +153,6 @@ class SoilLayer:
                     pos = soil_sprite.rect.topleft,
                     surf = choice(self.water_surfs),
                     groups = [self.all_sprites,self.water_sprites]
-
                 )
                 self.grid[y][x].append('W')
     
