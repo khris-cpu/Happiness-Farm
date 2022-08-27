@@ -6,18 +6,21 @@ from sprites import Generic , Water , WildFlower , Tree , Interaction
 from pytmx.util_pygame import load_pygame
 from support import *
 from transition import Transition
+from soil import SoilLayer
 
 class Level:
     def __init__(self):
 
         # get the display surface
         self.display_surface = pygame.display.get_surface() ## == self.screen
+
         # sprite group
         self.all_sprites = CameraGroup()
         self.collision_sprites = pygame.sprite.Group()
         self.tree_sprites = pygame.sprite.Group()
         self.interaction_sprites = pygame.sprite.Group()
 
+        self.soil_layer = SoilLayer(self.all_sprites)
         self.setup()
         self.overlay = Overlay(self.player)
         self.transition = Transition(self.reset,self.player)
@@ -28,7 +31,7 @@ class Level:
         tmx_data = load_pygame('./data/map.tmx') 
 
         ## Load Elements
-
+        
         ## house
         for layer in ['HouseFloor','HouseFurnitureBottom']:
             for x, y, surf in tmx_data.get_layer_by_name(layer).tiles():
@@ -79,7 +82,8 @@ class Level:
                     group = self.all_sprites,
                     collision_sprites = self.collision_sprites,
                     tree_sprites = self.tree_sprites,
-                    interaction = self.interaction_sprites)
+                    interaction = self.interaction_sprites,
+                    soil_layer = self.soil_layer)
             if obj.name == 'Bed':
                 Interaction(
                     pos = (obj.x,obj.y),
@@ -89,7 +93,7 @@ class Level:
 
     def player_add(self,item):
         self.player.item_inventory[item] += 1
-
+       
     def reset(self):
 
         #apples on the tree
@@ -97,6 +101,8 @@ class Level:
             for apple in tree.apple_sprites.sprites():
                 apple.kill()
             tree.create_fruit()
+        ## Soils
+        self.soil_layer.remove_water()
 
     def run(self,dt):
         self.display_surface.fill('black')
