@@ -40,17 +40,47 @@ APPLE_POS = {
 }
 
 GROW_SPEED = {
-    "corn" : 1,
-    "tomato" : 0.7
+    "rice" : 1,
+    "tomato" : 0.7,
+    "cabbage" : 0.9,
+    'beatroot' : 1.7,
+    'cauliflower' : 0.5,
+    'cucumber' : 0.7,
+    'eggplant' : 0.8,
+    'flower' : 0.4,
+    'radish' : 0.5,
+    'carrot' : 0.5,
+    'pumkin' : 1.2,
+    'purple cauliflower' : 0.9
 }
 
 SALE_PRICES = {
     'wood' : 4,
     'apple' : 2,
-    'corn' : 10,
-    'tomato' : 20
+    'rice' : 10,
+    'tomato' : 20,
+    'cabbage' : 12,
+    'beatroot' : 40,
+    'cauliflower' : 8,
+    'cucumber' : 10,
+    'eggplant' : 12,
+    'flower' : 5,
+    'radish' : 16,
+    'carrot' : 13,
+    'pumkin' : 20,
+    'purple cauliflower' : 21
 }
 PURCHASE_PRICES = {
-    'corn' : 4,
-    'tomato' : 5
+    'rice' : 4,
+    'tomato' : 5,
+    'cabbage' : 3,
+    'beatroot' : 2,
+    'cauliflower' : 3,
+    'cucumber' : 4,
+    'eggplant' : 6,
+    'flower' : 1,
+    'radish' : 5,
+    'carrot' : 5,
+    'pumkin' : 10,
+    'purple cauliflower' : 11
 }

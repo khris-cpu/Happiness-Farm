@@ -41,7 +41,8 @@ class Player(pygame.sprite.Sprite): ## pygame.spriteSprite --> Simple base class
         self.selected_tool = self.tools[self.tool_index]
 
         ## seeds
-        self.seeds = ['corn','tomato']
+        self.seeds = ['rice','tomato','cabbage','beatroot','cauliflower','cucumber',
+                      'eggplant','flower','radish','carrot','pumkin','purple cauliflower']
         self.seed_index = 0
         self.selected_seed = self.seeds[self.seed_index]
 
@@ -49,8 +50,18 @@ class Player(pygame.sprite.Sprite): ## pygame.spriteSprite --> Simple base class
         self.item_inventory = {
             'wood' : 0,
             'apple' : 0,
-            'corn' : 0,
-            'tomato' : 0
+            'rice' : 0,
+            'tomato' : 0,
+            'cabbage' : 0,
+            'beatroot' : 0,
+            'cauliflower' : 0,
+            'cucumber' : 0,
+            'eggplant' : 0,
+            'flower' : 0,
+            'radish' : 0,
+            'carrot' : 0,
+            'pumkin' : 0,
+            'purple cauliflower' : 0
         }
 
         ## interaction

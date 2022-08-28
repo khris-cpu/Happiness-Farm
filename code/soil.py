@@ -38,10 +38,31 @@ class Plant(pygame.sprite.Sprite):
         self.image = self.frames[self.age]
 
         ## Plant Generate Position
-        if plant_type == 'corn':
+        if plant_type == 'rice':
             self.y_offset = -16
         elif plant_type == 'tomato':
             self.y_offset = -8
+        elif plant_type == 'cabbage':
+            self.y_offset = -16
+        elif plant_type == 'beatroot':
+            self.y_offset = -8
+        elif plant_type == 'cauliflower':
+            self.y_offset = -12
+        elif plant_type == 'cucumber':
+            self.y_offset = -12
+        elif plant_type == 'eggplant':
+            self.y_offset = -8
+        elif plant_type == 'flower':
+            self.y_offset = -8
+        elif plant_type == 'radish':
+            self.y_offset = -12
+        elif plant_type == 'carrot':
+            self.y_offset = -8
+        elif plant_type == 'pumkin':
+            self.y_offset = -8
+        elif plant_type == 'purple cauliflower':
+            self.y_offset = -16
+         
 
         self.rect = self.image.get_rect(midbottom = soil.rect.midbottom + pygame.math.Vector2(0,self.y_offset))
         self.z = LAYERS['ground plant']
