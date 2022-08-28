@@ -7,7 +7,7 @@ from pytmx.util_pygame import load_pygame
 from support import *
 from transition import Transition
 from soil import SoilLayer
-from sky import Rain
+from sky import Rain , Sky
 from random import randint
 
 class Level:
@@ -29,8 +29,9 @@ class Level:
 
         ## Sky
         self.rain = Rain(self.all_sprites)
-        self.raining = randint(0,10) > 7
+        self.raining = randint(0,10) > 8
         self.soil_layer.raining = self.raining
+        self.sky = Sky()
 
     def setup(self):
         
@@ -111,11 +112,15 @@ class Level:
             for apple in tree.apple_sprites.sprites():
                 apple.kill()
             tree.create_fruit()
+
         ## Soils
         self.soil_layer.remove_water()
-        self.raining = randint(0,10) > 7
+        self.raining = randint(0,10) > 8
         if self.raining:
             self.soil_layer.water_all()
+
+        ## Sky
+        self.sky.start_color = [255,255,255]
 
     def plant_collision(self):
         if self.soil_layer.plant_sprites:
@@ -142,10 +147,12 @@ class Level:
         if self.raining:
             self.rain.update()
 
+        ## Day Time
+        self.sky.display(dt)
+
         ## Transition Overlay
         if self.player.sleep:
             self.transition.play()
-        print(self.player.item_inventory)
 
 ## Camera Class Group
 class CameraGroup(pygame.sprite.Group): ## --> All Background Item Group
