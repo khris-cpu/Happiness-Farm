@@ -73,7 +73,7 @@ class Player(pygame.sprite.Sprite): ## pygame.spriteSprite --> Simple base class
         self.target_pos = self.rect.center + PLAYER_TOOL_OFFSET[self.status.split('_')[0]]
 
     def use_seed(self):
-        return self.selected_seed 
+        self.soil_layer.plant_seed(self.target_pos,self.selected_seed)
 
     def import_assets(self):
 
@@ -134,8 +134,14 @@ class Player(pygame.sprite.Sprite): ## pygame.spriteSprite --> Simple base class
                 if self.tool_index >= len(self.tools):
                     self.tool_index = 0
                 self.selected_tool = self.tools[self.tool_index]
-            
-            ## seed use 
+
+            # seed use
+            if keys[pygame.K_v]:
+                self.timers['seed use'].activate()
+                self.direction = pygame.math.Vector2()
+                self.frame_index = 0
+
+            ## change use 
             if keys[pygame.K_e] and not self.timers['seed switch'].active:
                 self.timers['seed switch'].activate()
                 self.seed_index += 1

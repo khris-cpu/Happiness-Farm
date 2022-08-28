@@ -2,7 +2,7 @@ import pygame
 from settings import *
 from player import Player
 from overlay import Overlay
-from sprites import Generic , Water , WildFlower , Tree , Interaction
+from sprites import Generic , Water , WildFlower , Tree , Interaction , Particle
 from pytmx.util_pygame import load_pygame
 from support import *
 from transition import Transition
@@ -22,7 +22,7 @@ class Level:
         self.tree_sprites = pygame.sprite.Group()
         self.interaction_sprites = pygame.sprite.Group()
 
-        self.soil_layer = SoilLayer(self.all_sprites)
+        self.soil_layer = SoilLayer(self.all_sprites,self.collision_sprites)
         self.setup()
         self.overlay = Overlay(self.player)
         self.transition = Transition(self.reset,self.player)
@@ -103,6 +103,9 @@ class Level:
        
     def reset(self):
 
+        ## Plants
+        self.soil_layer.update_plant()
+
         #apples on the tree
         for tree in self.tree_sprites.sprites():
             for apple in tree.apple_sprites.sprites():
@@ -114,11 +117,26 @@ class Level:
         if self.raining:
             self.soil_layer.water_all()
 
+    def plant_collision(self):
+        if self.soil_layer.plant_sprites:
+            for plant in self.soil_layer.plant_sprites.sprites():
+                if plant.harvestable and plant.rect.colliderect(self.player.hitbox):
+                    self.player_add(plant.plant_type)
+                    plant.kill()
+                    Particle(
+                        pos = plant.rect.topleft,
+                        surf = plant.image,
+                        groups = self.all_sprites,
+                        z = LAYERS['main']
+                    )
+                    self.soil_layer.grid[plant.rect.centery // TILE_SIZE][plant.rect.centerx // TILE_SIZE].remove('P')
+
     def run(self,dt):
         self.display_surface.fill('black')
         self.all_sprites.customize_draw(self.player)
         self.all_sprites.update(dt)
         self.overlay.display()
+        self.plant_collision()
 
         ## Rain
         if self.raining:
@@ -127,6 +145,7 @@ class Level:
         ## Transition Overlay
         if self.player.sleep:
             self.transition.play()
+        print(self.player.item_inventory)
 
 ## Camera Class Group
 class CameraGroup(pygame.sprite.Group): ## --> All Background Item Group

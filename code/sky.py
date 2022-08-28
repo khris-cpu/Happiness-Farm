@@ -13,7 +13,7 @@ class Drop(Generic):
         self.lifetime = randint(400,500)
         self.start_time = pygame.time.get_ticks()
 
-        ## moving
+        ## moving --> Animation of Rain
         self.moving = moving
         if self.moving:
             self.pos = pygame.math.Vector2(self.rect.topleft)
@@ -51,7 +51,7 @@ class Rain:
         Drop(
             surf = choice(self.rain_drops),
             pos = (randint(0,self.floor_w),randint(0,self.floor_h)),
-            moving = False,
+            moving = True,
             groups = self.all_sprites,
             z = LAYERS['rain drops']
         )
