@@ -10,7 +10,7 @@ TILE_SIZE = 64
 
 OVERLAY_POSITIONS = {
     'tool' : (40, SCREEN_HEIGHT - 15),
-    'seed' : (70, SCREEN_HEIGHT - 5)
+    'seed' : (78, SCREEN_HEIGHT - 5)
 }
 
 PLAYER_TOOL_OFFSET = {

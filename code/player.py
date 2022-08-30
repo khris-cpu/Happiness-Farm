@@ -4,7 +4,7 @@ from support import *
 from timer import Timer
 
 class Player(pygame.sprite.Sprite): ## pygame.spriteSprite --> Simple base class for visible game objects.
-    def __init__ (self, pos , group, collision_sprites,tree_sprites,interaction,soil_layer):
+    def __init__ (self, pos , group, collision_sprites,tree_sprites,interaction,soil_layer,toggle_shop):
         super().__init__(group)
 
         self.import_assets()
@@ -64,11 +64,28 @@ class Player(pygame.sprite.Sprite): ## pygame.spriteSprite --> Simple base class
             'purple cauliflower' : 0
         }
 
-        ## interaction
+        self.seed_inventory = {
+            'rice' : 5,
+            'tomato' : 5,
+            'cabbage' : 5,
+            'beatroot' : 5,
+            'cauliflower' : 5,
+            'cucumber' : 5,
+            'eggplant' : 5,
+            'flower' : 5,
+            'radish' : 5,
+            'carrot' : 5,
+            'pumkin' : 5,
+            'purple cauliflower' :5
+        }
+        self.money = 200
+
+        ## Interaction
         self.tree_sprites = tree_sprites
         self.interaction = interaction
         self.sleep = False
         self.soil_layer = soil_layer
+        self.toggle_shop = toggle_shop
 
     def use_tool(self):
         if self.selected_tool == 'hoe':
@@ -84,6 +101,8 @@ class Player(pygame.sprite.Sprite): ## pygame.spriteSprite --> Simple base class
         self.target_pos = self.rect.center + PLAYER_TOOL_OFFSET[self.status.split('_')[0]]
 
     def use_seed(self):
+        if self.seed_inventory[self.selected_seed] > 0:
+            self.seed_inventory[self.selected_seed] -= 1
         self.soil_layer.plant_seed(self.target_pos,self.selected_seed)
 
     def import_assets(self):
@@ -101,7 +120,7 @@ class Player(pygame.sprite.Sprite): ## pygame.spriteSprite --> Simple base class
 
     ## Animations
     def animate(self,dt):
-        self.frame_index += 4 * dt
+        self.frame_index += 15 * dt
         if self.frame_index >= len(self.animations[self.status]):  ## In Our Folder in limits Only 4 Pictures
             self.frame_index = 0
 
@@ -165,7 +184,7 @@ class Player(pygame.sprite.Sprite): ## pygame.spriteSprite --> Simple base class
                 collided_interaction_sprite = pygame.sprite.spritecollide(self,self.interaction,False)
                 if collided_interaction_sprite:
                     if collided_interaction_sprite[0].name == 'Trader':
-                        pass
+                        self.toggle_shop()
                     else:
                         self.status = 'left_idle'
                         self.sleep = True

@@ -5,7 +5,6 @@ from support import import_folder
 from sprites import Generic
 from random import randint
 
-
 class Sky:
     def __init__(self):
         self.display_surface = pygame.display.get_surface()

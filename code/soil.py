@@ -1,9 +1,8 @@
-from secrets import choice
-from tabnanny import check
 import pygame
 from settings import *
 from pytmx.util_pygame import load_pygame
 from support import *
+from random import choice
 
 class SoilTile(pygame.sprite.Sprite):
     def __init__(self, pos ,surf , groups):
@@ -62,7 +61,6 @@ class Plant(pygame.sprite.Sprite):
             self.y_offset = -8
         elif plant_type == 'purple cauliflower':
             self.y_offset = -16
-         
 
         self.rect = self.image.get_rect(midbottom = soil.rect.midbottom + pygame.math.Vector2(0,self.y_offset))
         self.z = LAYERS['ground plant']
@@ -73,7 +71,7 @@ class Plant(pygame.sprite.Sprite):
 
             if int(self.age) > 0:
                 self.z = LAYERS['main']
-                self.hitbox = self.rect.copy().inflate(-26,self.rect.height * 0.04)
+                self.hitbox = self.rect.copy().inflate(-26, -self.rect.height * 0.4)
 
             if self.age >= self.max_age:
                 self.age = self.max_age
@@ -95,6 +93,7 @@ class SoilLayer:
         # Soil Graphic
         self.soil_surfs = import_folder_dict('./graphics/soil/')
         self.water_surfs = import_folder('./graphics/soil_water')
+
         self.create_soil_grid() 
         self.create_hit_rects()
     
@@ -118,9 +117,10 @@ class SoilLayer:
                     self.hit_rects.append(rect)
     
     ## Hit Soil
-    def get_hit(self,point):
+    def get_hit(self, point):
         for rect in self.hit_rects:
             if rect.collidepoint(point):
+
                 x = rect.x // TILE_SIZE
                 y = rect.y // TILE_SIZE
 
@@ -214,13 +214,13 @@ class SoilLayer:
                 
                 x = soil_sprite.rect.x // TILE_SIZE
                 y = soil_sprite.rect.y // TILE_SIZE
-
+                self.grid[y][x].append('W')
+                
                 WaterTile(
                     pos = soil_sprite.rect.topleft,
                     surf = choice(self.water_surfs),
                     groups = [self.all_sprites,self.water_sprites]
                 )
-                self.grid[y][x].append('W')
     
     def plant_seed(self,target_pos,seed):
         for soil_sprite in self.soil_sprites.sprites():
