@@ -39,16 +39,15 @@ class Menu:
         self.menu_top = SCREEN_HEIGHT / 2 - self.total_height / 2
         self.main_rect = pygame.Rect(SCREEN_WIDTH / 2 - self.width / 2, self.menu_top, self.width, self.total_height)
 
+        self.buy_text = self.font.render('buy',False,'Black')
+        self.sell_text = self.font.render('sell',False,'Black')
+
     def display_money(self):
         text_surf = self.font.render(f'${self.player.money}',False,'Black')
         text_rect = text_surf.get_rect(midbottom = (SCREEN_WIDTH / 2 , SCREEN_HEIGHT -  20))
 
         pygame.draw.rect(self.display_surface,'White',text_rect.inflate(10,10),0,6)
         self.display_surface.blit(text_surf,text_rect)
-
-        self.buy_text = self.font.render('buy',False,'Black')
-        self.sell_text = self.font.render('sell',False,'Black')
-
 
     def input(self):
 
@@ -67,6 +66,19 @@ class Menu:
                 self.index += 1
                 self.timer.activate()
 
+            if keys[pygame.K_SPACE]:
+                self.timer.activate()
+
+                current_item = self.options[self.index]
+
+                if self.index <= self.sell_border:
+                    if self.player.item_inventory[current_item] > 0:
+                        self.player.item_inventory[current_item] -= 1
+                        self.player.money += SALE_PRICES[current_item]
+                else:
+                    pass
+
+        ## clamo the calues
         if self.index < 0:
             self.index = len(self.options) - 1
         
@@ -78,7 +90,7 @@ class Menu:
         ## Background
         bg_rect = pygame.Rect(self.main_rect.left,top,self.width,text_surf.get_height() + (self.padding * 2))
         pygame.draw.rect(self.display_surface,'White',bg_rect,0,4)
-        
+       
         ## text
         text_rect = text_surf.get_rect(midleft = (self.main_rect.left + 20 , bg_rect.centery))
         self.display_surface.blit(text_surf,text_rect)
@@ -90,8 +102,9 @@ class Menu:
 
         if selected:
             pygame.draw.rect(self.display_surface,'black',bg_rect,4,4)
-            if self.index > self.sell_border: ## Buy
-                self.display_surface.blit(self.sell_text,(0,0))
+            if self.index <= self.sell_border: ## Buy
+                pos_rect = self.sell_text.get_rect(midleft = (self.main_rect.left + 190 , bg_rect.centery))
+                self.display_surface.blit(self.sell_text,pos_rect)
             else: ## Sell
                 self.display_surface.blit(self.sell_text,(0,0))
 
@@ -103,4 +116,4 @@ class Menu:
             top = self.main_rect.top + text_index * (text_surf.get_height() + (self.padding * 2) + self.space)
             amount_list = list(self.player.item_inventory.values())
             amount = amount_list[text_index]
-            self.show_entry(text_surf , 0 , top,self.index == text_index)
+            self.show_entry(text_surf , amount , top,self.index == text_index)

@@ -48,12 +48,12 @@ class Player(pygame.sprite.Sprite): ## pygame.spriteSprite --> Simple base class
 
         ## inventory
         self.item_inventory = {
-            'wood' : 0,
-            'apple' : 0,
-            'rice' : 0,
+            'wood' : 2,
+            'apple' : 3,
+            'rice' : 1,
             'tomato' : 0,
             'cabbage' : 0,
-            'cauliflower' : 0,
+            'cauliflower' : 20,
             'cucumber' : 0,
             'eggplant' : 0,
             'carrot' : 0,
