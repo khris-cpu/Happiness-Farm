@@ -53,30 +53,22 @@ class Player(pygame.sprite.Sprite): ## pygame.spriteSprite --> Simple base class
             'rice' : 0,
             'tomato' : 0,
             'cabbage' : 0,
-            'beatroot' : 0,
             'cauliflower' : 0,
             'cucumber' : 0,
             'eggplant' : 0,
-            'flower' : 0,
-            'radish' : 0,
             'carrot' : 0,
             'pumkin' : 0,
-            'purple cauliflower' : 0
         }
 
         self.seed_inventory = {
             'rice' : 5,
             'tomato' : 5,
             'cabbage' : 5,
-            'beatroot' : 5,
             'cauliflower' : 5,
             'cucumber' : 5,
             'eggplant' : 5,
-            'flower' : 5,
-            'radish' : 5,
             'carrot' : 5,
             'pumkin' : 5,
-            'purple cauliflower' :5
         }
         self.money = 200
 
@@ -120,7 +112,7 @@ class Player(pygame.sprite.Sprite): ## pygame.spriteSprite --> Simple base class
 
     ## Animations
     def animate(self,dt):
-        self.frame_index += 15 * dt
+        self.frame_index += 13 * dt
         if self.frame_index >= len(self.animations[self.status]):  ## In Our Folder in limits Only 4 Pictures
             self.frame_index = 0
 
@@ -181,6 +173,7 @@ class Player(pygame.sprite.Sprite): ## pygame.spriteSprite --> Simple base class
 
             ## Use Bed
             if keys[pygame.K_f]:
+                self.toggle_shop()
                 collided_interaction_sprite = pygame.sprite.spritecollide(self,self.interaction,False)
                 if collided_interaction_sprite:
                     if collided_interaction_sprite[0].name == 'Trader':
