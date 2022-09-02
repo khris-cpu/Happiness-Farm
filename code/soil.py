@@ -1,3 +1,4 @@
+from re import X
 import pygame
 from settings import *
 from pytmx.util_pygame import load_pygame
@@ -61,7 +62,7 @@ class Plant(pygame.sprite.Sprite):
             self.y_offset = -8
         elif plant_type == 'purple cauliflower':
             self.y_offset = -16
-
+        self.y_offset = -16
         self.rect = self.image.get_rect(midbottom = soil.rect.midbottom + pygame.math.Vector2(0,self.y_offset))
         self.z = LAYERS['ground plant']
 
@@ -71,7 +72,6 @@ class Plant(pygame.sprite.Sprite):
 
             if int(self.age) > 0:
                 self.z = LAYERS['main']
-                self.hitbox = self.rect.copy().inflate(-26, -self.rect.height * 0.4)
 
             if self.age >= self.max_age:
                 self.age = self.max_age
