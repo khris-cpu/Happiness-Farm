@@ -9,7 +9,7 @@ from transition import Transition
 from soil import SoilLayer
 from sky import Rain , Sky
 from random import randint
-from menu import Menu
+from menu import Menu ,Inventory
 
 class Level:
     def __init__(self):
@@ -36,7 +36,9 @@ class Level:
 
         ## Shop
         self.menu = Menu(self.player,self.toggle_shop)
+        self.inventory = Inventory(self.player,self.toggle_inventory)
         self.shop_active = False
+        self.inventory_active = False
 
     def setup(self):
         
@@ -97,7 +99,8 @@ class Level:
                     tree_sprites = self.tree_sprites,
                     interaction = self.interaction_sprites,
                     soil_layer = self.soil_layer, 
-                    toggle_shop = self.toggle_shop)
+                    toggle_shop = self.toggle_shop,
+                    toggle_inventory = self.toggle_inventory)
             if obj.name == 'Bed':
                 Interaction(
                     pos = (obj.x,obj.y),
@@ -116,8 +119,10 @@ class Level:
         self.player.item_inventory[item] += 1
 
     def toggle_shop(self):
-
         self.shop_active = not self.shop_active 
+
+    def toggle_inventory(self):
+        self.inventory_active = not self.inventory_active
 
     def reset(self):
 
@@ -163,6 +168,8 @@ class Level:
         ## Updates
         if self.shop_active:
             self.menu.update()
+        elif self.inventory_active:
+            self.inventory.update()
         else:
             self.all_sprites.update(dt)
             self.plant_collision()
